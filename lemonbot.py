@@ -37,7 +37,7 @@ async def on_message(message):
         return
     elif message.content.startswith('!purge'):
         await client.delete_message(message)
-        if message.author.id == '[me!]': #dats me
+        if message.author.id == '134134591597445130': #dats me
             db.purge()
             await client.send_message(message.author, 'Birthday database purged!')
         else:
