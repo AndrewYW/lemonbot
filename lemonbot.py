@@ -4,7 +4,6 @@ import datetime
 import schedule
 from tinydb import TinyDB, Query
 
-desc = 'Lemonbot, the client for lemons'
 db = TinyDB('data.json')
 client = discord.Client()
 Users = Query()
