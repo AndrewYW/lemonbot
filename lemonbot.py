@@ -55,7 +55,8 @@ async def on_message(message):
         date = getDate()
         msg = "Today's date is: {}/{}/{}".format(str(date['month']), str(date['day']), str(date['year']))
         await client.send_message(message.channel, msg)
-
+    elif message.content.startswith('!code'):
+        await client.send_message(message.channel, 'https://github.com/AndrewYW/lemonbot')
     elif message.content.startswith('!bday'):
         if message.channel.name == 'bottest': #this will need to change to proper channel id
             if message.content == "!bday help":
