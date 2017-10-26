@@ -8,6 +8,15 @@ db = TinyDB('data.json')
 client = discord.Client()
 Users = Query()
 
+BIRTHDAY_ROLE = str(368858356946960385)
+BIRTHDAY_CHANNEL = str(368854691045703681)
+RESPONSE_CHANNEL = str(369262353398628352)
+LEMON_SERVER = str(369016745354067979)
+TESTING_CHANNEL = str(369016745354067979)
+TEST_ROLE = str(372889370069565450)
+HOME_SERVER = str(331156372244791298)
+OWNER_ID = '[134134591597445130]'
+CLIENT_TOKEN = 'MzY4ODg4Mzg4MDQxODM0NDk4.DNKhwA.5kwzvXwo9iSuTMAbJ6tlTCwgcs4'
 # Print the starting text
 print('---------------')
 print('lemonbot')
@@ -37,7 +46,7 @@ async def on_message(message):
         return
     elif message.content.startswith('!purge'):
         await client.delete_message(message)
-        if message.author.id == '[user ID]': #dats me
+        if message.author.id == OWNER_ID: #dats me
             db.purge()
             await client.send_message(message.author, 'Birthday database purged!')
         else:
@@ -58,21 +67,22 @@ async def on_message(message):
     elif message.content.startswith('!code'):
         await client.send_message(message.channel, 'https://github.com/AndrewYW/lemonbot')
     elif message.content.startswith('!bday'):
-        if message.channel.name == 'bottest': #this will need to change to proper channel id
-            if message.content == "!bday help":
-                await client.send_message(message.channel, "")
+        if message.channel.id == BIRTHDAY_CHANNEL: #this will need to change to proper channel id
+            if message.content == "!bday":
+                await client.send_message(message.channel, "{0.author.mention}: Need to include month and day.".format(message))
             else:
                 await client.delete_message(message)
                 await bday_command(message)
     elif message.content.startswith('!lemonbot'):
         await client.send_message(message.channel, """
-        Lemonbot, the bot for lemons. 
-        Commands list and formatting:
-        [!status]: Checks status of bot.
-        [!purpose]: Just try it.
-        [!today]: Returns today's date in mm/dd/yyyy format.
-        [!bday mm dd]: Adds your birthday to the database. Type [!bday help] for more information.
-        """)
+            Lemonbot, the bot for lemons. 
+            Commands list and formatting:
+            [!status]: Checks status of bot.
+            [!purpose]: Just try it.
+            [!today]: Returns today's date in mm/dd/yyyy format.
+            [!bday mm dd]: Adds your birthday to the database.
+            [!code]: Links the Github repo of Lemonbot.
+            """)
    
 async def bday_command(message):
     auth = message.author
@@ -86,54 +96,62 @@ async def bday_command(message):
                 'id': auth.id,
                 'text': message.content,
                 'month': month,
-                'day': date
+                'day': date,
+                'birthday': False,
+                'changed': False
             })
-            await client.send_message(message.channel, 'Inserted into database')
-            await client.send_message(message.author, 'Add success!')
+            await client.send_message(client.get_channel(RESPONSE_CHANNEL), 'Inserted into database: {0.author}'.format(message))
+            await client.send_message(message.channel, '{0.author.mention}: Add success!'.format(message))
         else:
-            db.update({
-                'month': month,
-                'day': date
-            }, Users.id == auth.id)
-            await client.send_message(message.channel, 'Updating Entry')
+            if not Users.changed and Users.birthday:
+                db.update({
+                    'month': month,
+                    'day': date,
+                    'changed': True
+                }, Users.id == auth.id)
+                await client.send_message(message.channel, 'Updating birthday entry for: {0.author.mention}'.format(message))
+                await client.send_message(client.get_channel(RESPONSE_CHANNEL), 'Updated entry for {0.author}'.format(message))
     else:
         await client.send_message(message.channel, "'They didn't understand my lemon styles. I like this way better.'")
         await client.send_message(message.channel, 'Proper format: "!bday mm dd"')
 
-'''
-async def search_command(message):
-    auth = message.author
-    """
-    if db.contains((Users.user == auth) & (Users.text == '!bday gurdertermer')):
-        await client.send_message(message.channel, str(type(Users.text)))
-    """
     
-    results = db.search(Users.user == auth)
-    print(str(len(results)))
-    for dic in results:
-        if dic['text'] == '!bday gurdertermer':
-            print("found")
-            await client.send_message(message.channel, dic['text'])
-'''
-    
-async def scrub_bdays():
+async def scrub_bdays(month, day):
     """
     Get all members of Lemon Fam
-    Clear 'birthday' role from every member
+    Clear given role role from every member
     I really hope this works lmao
     """
-    for server in client.servers:
-        if server.name == 'Lemon Family': #needs to be ID as well
-            members = server.members #iterable
-            for member in members:
-                for role in member.roles:
-                    if role.name == 'birthday': #also ID fool why you doing this
-                        member.roles.remove(role)
-async def add_bdays():
+    lemonServer = client.get_server(LEMON_SERVER)
+    role = discord.utils.get(lemonServer.roles, id = BIRTHDAY_ROLE)
+    birthdayLemons = db.search(Users.day != day)
+    amount = "Removing: " + str(len(birthdayLemons)) + " members today"
+    await client.send_message(client.get_channel(RESPONSE_CHANNEL), amount)
+    if len(birthdayLemons) > 0:
+        for doc in birthdayLemons:
+            lemon = lemonServer.get_member(doc['id'])
+            await client.remove_roles(lemon, role)
+            await client.send_message(client.get_channel(RESPONSE_CHANNEL), "Removed role")
+
+async def add_bdays(month, day):
     """
     Scan through database
     If doc birthday value matches today's date, add role to that member
     """
+    lemonServer = client.get_server(LEMON_SERVER) #LEMON_SERVER
+    birthdayLemons = db.search((Users.month == month) & (Users.day == day) & (Users.birthday==False))
+    if len(birthdayLemons) > 0:
+        amount = "Adding " + str(len(birthdayLemons)) + " members today"
+        await client.send_message(client.get_channel(RESPONSE_CHANNEL), amount)
+        for doc in birthdayLemons:
+            lemon = lemonServer.get_member(doc['id'])
+            db.update({'birthday': True}, Users.id == lemon.id)
+            update = "Birthday today: " + str(lemon.name)
+            await client.send_message(client.get_channel(RESPONSE_CHANNEL), update)
+            role = discord.utils.get(lemonServer.roles, id=BIRTHDAY_ROLE)
+            await client.add_roles(lemon, role) #BIRTHDAY_ROLE
+            await client.send_message(client.get_channel(RESPONSE_CHANNEL), "Added role to a user")
+
 
 async def daily_check():
     """
@@ -144,12 +162,18 @@ async def daily_check():
     """
     await client.wait_until_ready()
     while not client.is_closed:
-        await scrub_bdays()
-        await add_bdays()
-        await asyncio.sleep(86400) #repeat daily
+        date = getDate()
+        current = 'Current day: ' + str(date['month']) + "/" + str(date['day']) + "/" + str(date['year'])
+        await client.send_message(client.get_channel(RESPONSE_CHANNEL), current ) #Private testing channel
+        await scrub_bdays(date['month'], date['day'])
+        await asyncio.sleep(10)
+        await add_bdays(date['month'], date['day'])
+        
+        
+        await asyncio.sleep(86400) #repeat daily -- 86400 seconds in a day
 
 
 
 if __name__ == '__main__':
     client.loop.create_task(daily_check())
-    client.run("[token]")
+    client.run(CLIENT_TOKEN)
