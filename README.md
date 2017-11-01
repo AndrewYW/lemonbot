@@ -4,7 +4,7 @@ A simple little Discord bot written to do some tasks for a Twitch community Disc
 
 I was unable to attend HackRU this semester so in spite I spent part of the weekend writing this bot. More features will be added as I get the motivation to create them.
 
-## Built with
+## Dependencies
 
 - `discord.py`: Discord API wrapper
 
