@@ -15,7 +15,7 @@ LEMON_SERVER = str(369016745354067979)
 TESTING_CHANNEL = str(369016745354067979)
 TEST_ROLE = str(372889370069565450)
 HOME_SERVER = str(331156372244791298)
-OWNER_ID = '[134134591597445130]'
+OWNER_ID = str(134134591597445130)
 CLIENT_TOKEN = 'MzY4ODg4Mzg4MDQxODM0NDk4.DNKhwA.5kwzvXwo9iSuTMAbJ6tlTCwgcs4'
 # Print the starting text
 print('---------------')
@@ -55,6 +55,7 @@ async def on_message(message):
             msg = '{0.author.mention} has attempted to purge the db.'.format(message)
             await client.send_message(message.channel, msg)
             await client.send_message(message.channel, "Ahh! Atatatatat-No! That is why I'm royal, and *you* are servile!")
+            await client.send_file(message.channel, './res/img/unacceptable.png')
 
     elif message.content.startswith("!status"):
         await client.send_message(message.channel, "Stop screaming! Why are you screaming?!")
@@ -67,7 +68,7 @@ async def on_message(message):
     elif message.content.startswith('!code'):
         await client.send_message(message.channel, 'https://github.com/AndrewYW/lemonbot')
     elif message.content.startswith('!bday'):
-        if message.channel.id == BIRTHDAY_CHANNEL: #this will need to change to proper channel id
+        if message.channel.id == BIRTHDAY_CHANNEL:
             if message.content == "!bday":
                 await client.send_message(message.channel, "{0.author.mention}: Need to include month and day.".format(message))
             else:
