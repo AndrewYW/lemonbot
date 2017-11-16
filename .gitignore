@@ -1,4 +1,6 @@
 
+*.pyc
+__pycache__/*.pyc
 ids.txt
 bfg.jar
 lemonbotosx.pem
