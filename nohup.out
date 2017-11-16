@@ -68,3 +68,7 @@ Traceback (most recent call last):
   File "/home/ubuntu/anaconda3/lib/python3.6/site-packages/discord/client.py", line 2943, in remove_roles
     new_roles = [x.id for x in member.roles]
 AttributeError: 'NoneType' object has no attribute 'roles'
+  File "lemonbot.py", line 135
+    if len(lemon.roles) > 0:
+                           ^
+TabError: inconsistent use of tabs and spaces in indentation

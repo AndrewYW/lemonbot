@@ -1,4 +1,5 @@
-
+nohup.out
+nohup.out.swp
 *.pyc
 __pycache__/*.pyc
 ids.txt
