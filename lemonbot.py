@@ -134,8 +134,9 @@ async def scrub_bdays(month, day):
             lemon = lemonServer.get_member(doc['id'])
             if lemon:
                 if len(lemon.roles) > 0:
-                    await client.remove_roles(lemon, role)
-                    await client.send_message(client.get_channel(RESPONSE_CHANNEL), "Removed role")
+                    if role in lemon.roles:
+                        await client.remove_roles(lemon, role)
+                        await client.send_message(client.get_channel(RESPONSE_CHANNEL), "Removed role")
                 
 
 async def add_bdays(month, day):
