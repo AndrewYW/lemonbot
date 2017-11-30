@@ -77,11 +77,12 @@ async def on_message(message):
             else:
                 await client.delete_message(message)
                 await bday_command(message)
-    elif message.cont.startswith('!list'):
-        if message.author == OWNER_ID or message.author == KAIT_ID:
-            for item in db:
+    elif message.content.startswith('!list'):
+        if message.author.id == OWNER_ID or message.author.id == KAIT_ID:
+		doc = db.all()
+            for item in doc:
                 string = item.name + ', birthday: ' + item.month + ' ' + item.day
-                client.send_message(RESPONSE_CHANNEL, string)
+                await client.send_message(RESPONSE_CHANNEL, string)
     elif message.content.startswith('!lemonbot'):
         await client.send_message(message.channel, """
             Lemonbot, the bot for lemons. 
