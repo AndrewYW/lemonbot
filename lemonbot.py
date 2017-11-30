@@ -1,6 +1,7 @@
 import discord, logging, json
 import asyncio
 import datetime
+import pytz
 import schedule
 import toks
 from tinydb import TinyDB, Query
@@ -27,7 +28,7 @@ print('Starting lemonbot...')
 logging.basicConfig(level=logging.WARNING)
 
 def getDate():
-    now = datetime.datetime.now()
+    now = datetime.datetime.now(pytz.timezone('US/Pacific'))
     date = {
         'year': now.year,
         'month': now.month,
