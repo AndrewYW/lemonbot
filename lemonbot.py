@@ -81,8 +81,8 @@ async def on_message(message):
         if message.author.id == OWNER_ID or message.author.id == KAIT_ID:
             doc = db.all()
             for item in doc:
-                string = item.name + ', birthday: ' + item.month + ' ' + item.day
-                await client.send_message(RESPONSE_CHANNEL, string)
+                string = item['user'] + ', birthday: ' + str(item['month']) + ' ' + str(item['day'])
+                await client.send_message(client.get_channel(RESPONSE_CHANNEL), string)
     elif message.content.startswith('!lemonbot'):
         await client.send_message(message.channel, """
             Lemonbot, the bot for lemons. 
