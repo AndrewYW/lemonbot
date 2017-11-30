@@ -79,7 +79,7 @@ async def on_message(message):
                 await bday_command(message)
     elif message.content.startswith('!list'):
         if message.author.id == OWNER_ID or message.author.id == KAIT_ID:
-		doc = db.all()
+            doc = db.all()
             for item in doc:
                 string = item.name + ', birthday: ' + item.month + ' ' + item.day
                 await client.send_message(RESPONSE_CHANNEL, string)
