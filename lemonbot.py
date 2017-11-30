@@ -19,6 +19,7 @@ TEST_ROLE = toks.TEST_ROLE
 HOME_SERVER = toks.HOME_SERVER
 OWNER_ID = toks.OWNER_ID
 CLIENT_TOKEN = toks.CLIENT_TOKEN
+KAIT_ID = toks.KAIT_ID
 # Print the starting text
 print('---------------')
 print('lemonbot')
@@ -76,6 +77,11 @@ async def on_message(message):
             else:
                 await client.delete_message(message)
                 await bday_command(message)
+    elif message.cont.startswith('!list'):
+        if message.author == OWNER_ID or message.author == KAIT_ID:
+            for item in db:
+                string = item.name + ', birthday: ' + item.month + ' ' + item.day
+                client.send_message(RESPONSE_CHANNEL, string)
     elif message.content.startswith('!lemonbot'):
         await client.send_message(message.channel, """
             Lemonbot, the bot for lemons. 
