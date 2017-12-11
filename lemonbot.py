@@ -87,7 +87,7 @@ async def on_message(message):
         await client.delete_message(message)
         server = client.get_server(LEMON_SERVER)
         kait = server.get_member(KAIT_ID)
-        await client.send_message(message.channel, "Sure thing {}! Would you like flowers or cake as well?".format(kait))
+        await client.send_message(message.channel, "Sure thing {}! Would you like flowers or cake as well?".format(kait.mention))
 
         
     elif message.content.startswith('!lemonbot'):
