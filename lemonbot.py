@@ -83,6 +83,13 @@ async def on_message(message):
             for item in doc:
                 string = item['user'] + ', birthday: ' + str(item['month']) + ' ' + str(item['day'])
                 await client.send_message(client.get_channel(RESPONSE_CHANNEL), string)
+    elif message.content.startswith('!kait'):
+        await client.delete_message(message)
+        server = client.get_server(LEMON_SERVER)
+        kait = server.get_member(KAIT_ID)
+        await client.send_message(message.channel, "Sure thing {}! Would you like flowers or cake as well?".format(kait))
+
+        
     elif message.content.startswith('!lemonbot'):
         await client.send_message(message.channel, """
             Lemonbot, the bot for lemons. 
